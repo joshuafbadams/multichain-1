@@ -113,7 +113,10 @@ A [changelog](ChangeLog.md) is available
 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 
+
+
 [badge-license]: https://img.shields.io/badge/license-Apache2-green.svg?style=flat
 
-Vagrant: https://www.vagrantup.com/
-Multichain: http://www.multichain.com/
+
+[Vagrant]: https://www.vagrantup.com/
+[Multichain]: http://www.multichain.com/
