@@ -3,8 +3,6 @@
 [![License Apache 2][badge-license]](LICENSE)
 [![GitHub version](https://badge.fury.io/gh/nlamirault%2Fmultichain.svg)](https://badge.fury.io/gh/nlamirault%2Fmert)
 
-Experiments on [Multichain][]
-
 ## Description
 
 Setup your blockchain using [Multichain][] with [Vagrant][].
