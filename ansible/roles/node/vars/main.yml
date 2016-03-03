@@ -1,0 +1,13 @@
+---
+user_name: vagrant
+download_url: "http://www.multichain.com/download/"
+download_version: "multichain-1.0-alpha-17"
+download_extension: ".tar.gz"
+download_filename: "{{download_version}}{{download_extension}}"
+mc_home: /home/{{user_name}}/
+mc_path: "{{mc_home}}{{download_version}}"
+mc_util: "{{mc_path}}/multichain-util"
+mc_daemon: "{{mc_path}}/multichaind"
+mc_conf: "{{mc_home}}.multichain/multichain.conf"
+chain_name: minechain
+chain_params: "{{mc_home}}.multichain/{{chain_name}}/params.dat"

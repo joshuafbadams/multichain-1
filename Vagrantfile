@@ -18,34 +18,49 @@
 # Require a recent version of vagrant otherwise some have reported errors setting host names on boxes
 Vagrant.require_version ">= 1.6.2"
 
+number_of_nodes = ENV['MULTICHAIN_NODES'].to_i
+if number_of_nodes < 1
+  number_of_nodes = 2
+end
+
 Vagrant.configure(2) do |config|
 
   config.vm.box = "willy64"
   config.vm.box = "https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.hostname = "Multichain"
-  config.vm.network :private_network, :ip => '10.4.4.4'
-  # number_of_nodes.times do |i|
-  #   config.vm.define "multichain-node-#{i}" do |node|
-  #     node.vm.hostname = "multichain-node-#{i}.#{tld}"
-  #     node.vm.network :private_network, :ip => "10.4.4.#{i}"
-  #   end
-  #   i += 1
-  # end
+  number_of_nodes.times do |i|
+    config.vm.define "multichain-node-#{i}" do |node|
+      node.vm.hostname = "multichain-node-#{i}"
+      node.vm.network :private_network, :ip => "10.9.9.1#{i}"
+    end
+    i += 1
+  end
 
   config.ssh.forward_agent = true
   config.ssh.forward_x11 = true
 
   config.vm.provider :virtualbox do |vb|
-    #vb.gui = true
     vb.customize ["modifyvm", :id, "--memory", "512"]
+    vb.customize ["modifyvm", :id, "--cpus", 1]
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "off"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
-    vb.name = "CloudDev"
   end
 
-  config.vm.provision "shell", :inline => "wget http://www.multichain.com/download/multichain-1.0-alpha-16.tar.gz"
-  config.vm.provision "shell", :inline => "tar -xvzf multichain-1.0-alpha-16.tar.gz"
-  config.vm.provision "shell", :inline => "cd multichain-1.0-alpha-16 && mv multichaind multichain-cli multichain-util /usr/local/bin"
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "ansible/multichain.yml"
+    ansible.verbose = "v"
+    number_of_nodes.times do |i|
+      config.vm.define "multichain-node-#{i}" do |node|
+        node.vm.hostname = "multichain-node-#{i}"
+      end
+      i += 1
+    end
+    multichain_nodes = Array.new
+    number_of_nodes.times do |i|
+      multichain_nodes.push("multichain-node-#{i}")
+    end
+    ansible.groups = {'multichain_nodes' => multichain_nodes}
+  end
 
 end

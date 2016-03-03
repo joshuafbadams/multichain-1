@@ -1,0 +1,17 @@
+---
+- name: Download Multichain
+  get_url: url={{download_url}}{{download_filename}} dest=/home/{{user_name}}/
+
+- name: Extract binaries
+  unarchive: src=/home/{{user_name}}/{{download_filename}} dest=/home/{{user_name}}/ copy=no
+
+- name: Set permissions
+  file: path={{mc_path}} owner={{user_name}} group={{user_name}} mode=0544 recurse=yes
+
+- name: Create chain named {{chain_name}}
+  shell: "{{mc_util}} create {{chain_name}} creates=/home/{{user_name}}/.multichain/{{chain_name}}/params.dat executable=/bin/bash chdir={{mc_home}}"
+  become_user: "{{user_name}}"
+
+- name: Initialise the blockchain
+  shell: "{{mc_daemon}} {{chain_name}} -daemon executable=/bin/bash chdir={{mc_home}}"
+  become_user: "{{user_name}}"
